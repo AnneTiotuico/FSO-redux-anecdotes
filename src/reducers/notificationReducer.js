@@ -15,12 +15,22 @@ const notificationSlice = createSlice({
 
 export const { updateNotification } = notificationSlice.actions
 
+let previousNotification;
+
 export const setNotification = (message, delay = 5) => {
   return dispatch => {
     dispatch(updateNotification(message))
-    setTimeout(() => {
-      dispatch(updateNotification(initialState))
-    }, delay * 1000)
+    if (!previousNotification) {
+      previousNotification = setTimeout(() => {
+        dispatch(updateNotification(initialState))
+      }, delay * 1000)
+    } else {
+      setTimeout(() => {
+        dispatch(updateNotification(initialState))
+      }, delay * 1000)
+      clearTimeout(previousNotification)
+      previousNotification = null
+    }
   }
 }
 
